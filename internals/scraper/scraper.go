@@ -3,6 +3,7 @@ package scraper
 import (
 	"fmt"
 	"log"
+	"strings"
 	"xiv-scraper/internals/ffxiv"
 
 	"github.com/gocolly/colly"
@@ -38,8 +39,39 @@ func (s *Scraper) Scrape() error {
 
 	// Find and visit all links
 	c.OnHTML(".listing", func(e *colly.HTMLElement) {
-		e.Unmarshal()
+		listing := &ffxiv.Listing{Party: []*ffxiv.Slot{}}
+		e.Unmarshal(listing)
+
+		listing.DataCenter = e.Attr("data-centre")
+		description := e.ChildText(".left .description")
+		fmt.Println(description)
+		listing.Description = description
+
+		e.ForEach(".party .slot", func(s int, p *colly.HTMLElement) {
+			slot := ffxiv.NewSlot()
+			class := p.Attr("class")
+
+			if strings.Contains(class, "dps") {
+				slot.Roles.Roles = append(slot.Roles.Roles, ffxiv.Dps)
+			}
+			if strings.Contains(class, "healer") {
+				slot.Roles.Roles = append(slot.Roles.Roles, ffxiv.Healer)
+			}
+			if strings.Contains(class, "tank") {
+				slot.Roles.Roles = append(slot.Roles.Roles, ffxiv.Tank)
+			}
+			if strings.Contains(class, "empty") {
+				slot.Roles.Roles = append(slot.Roles.Roles, ffxiv.Empty)
+			}
+			if strings.Contains(class, "filled") {
+				slot.Filled = true
+				slot.Job = ffxiv.GetJob(p.Attr("title"))
+			}
+			listing.Party = append(listing.Party, slot)
+		})
+		listings.Add(listing)
 	})
 	c.Visit("https://xivpf.com/listings")
-
+	s.Listings = listings
+	return nil
 }
