@@ -16,6 +16,9 @@ type Listing struct {
 }
 
 // defining what makes a slot
+type Job int
+type role int
+
 type Slot struct {
 	Roles  Roles
 	Job    Job
@@ -24,13 +27,47 @@ type Slot struct {
 type Roles struct {
 	Roles []role
 }
-type Job int
-type role int
 
 func NewSlot() *Slot {
 	return &Slot{
 		Roles: Roles{Roles: []role{}},
 	}
+}
+func (ls *Listings) Add(l *Listing) {
+	for _, existingListing := range ls.Listings {
+		if existingListing.Creator == l.Creator {
+			return
+		}
+	}
+	ls.Listings = append(ls.Listings, l)
+}
+
+func (l *Listings) GetListings(ls *Listings, duty string) *Listings {
+	listings := &Listings{Listings: []*Listing{}}
+	for _, l := range ls.Listings {
+		if l.Duty == EncounterHandler(duty) {
+			if l.DataCenter == "Aether" {
+				listings.Listings = append(listings.Listings, l)
+			}
+		}
+	}
+	return listings
+}
+
+func EncounterHandler(enc string) string {
+	switch enc {
+	case "ucob":
+		return "The Unending Coil of Bahamut (Ultimate)"
+	case "uwu":
+		return "The Weapon's Refrain (Ultimate)"
+	case "tea":
+		return "The Epic of Alexander (Ultimate)"
+	case "dsr":
+		return "Dragonsong's Reprise (Ultimate)"
+	case "top":
+		return "The Omega Protocol (Ultimate)"
+	}
+	return ""
 }
 
 func GetJob(abbr string) Job {
@@ -75,14 +112,6 @@ func GetJob(abbr string) Job {
 		return BLU
 	}
 	return Unknown
-}
-
-func (ls *Listings) Add(l *Listing) {
-	for _, existingListing := range ls.Listings {
-		if existingListing.Creator == l.Creator {
-			return
-		}
-	}
 }
 
 const (
