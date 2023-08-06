@@ -45,7 +45,7 @@ func (ls *Listings) Add(l *Listing) {
 func (l *Listings) GetListings(ls *Listings, duty string) *Listings {
 	listings := &Listings{Listings: []*Listing{}}
 	for _, l := range ls.Listings {
-		if l.Duty == EncounterHandler(duty) {
+		if l.Duty == DutyHandler(duty) {
 			if l.DataCenter == "Aether" {
 				listings.Listings = append(listings.Listings, l)
 			}
@@ -54,8 +54,32 @@ func (l *Listings) GetListings(ls *Listings, duty string) *Listings {
 	return listings
 }
 
-func EncounterHandler(enc string) string {
-	switch enc {
+func (l *Listings) GetUltimateListings(ls *Listings) *Listings {
+	listings := &Listings{Listings: []*Listing{}}
+	for _, l := range ls.Listings {
+		if l.DataCenter == "Aether" {
+			if l.Duty == DutyHandler("ucob") {
+				listings.Listings = append(listings.Listings, l)
+			}
+			if l.Duty == DutyHandler("uwu") {
+				listings.Listings = append(listings.Listings, l)
+			}
+			if l.Duty == DutyHandler("tea") {
+				listings.Listings = append(listings.Listings, l)
+			}
+			if l.Duty == DutyHandler("dsr") {
+				listings.Listings = append(listings.Listings, l)
+			}
+			if l.Duty == DutyHandler("top") {
+				listings.Listings = append(listings.Listings, l)
+			}
+		}
+	}
+	return listings
+}
+
+func DutyHandler(duty string) string {
+	switch duty {
 	case "ucob":
 		return "The Unending Coil of Bahamut (Ultimate)"
 	case "uwu":
