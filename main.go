@@ -23,10 +23,8 @@ func main() {
 	})
 	app.Get("/:duty", func(c *fiber.Ctx) error {
 		listings := scraper.Listings.GetListings(scraper.Listings, c.Params("duty"))
-		for _, l := range listings.Listings {
-			fmt.Println(l.Creator)
-		}
-		return c.SendString(c.Params("duty"))
+		return c.JSON(listings)
+
 	})
 	app.Listen(":3000")
 }
