@@ -44,6 +44,7 @@ func (s *Scraper) Scrape() error {
 
 		listing.DataCenter = e.Attr("data-centre")
 		description := e.ChildText(".left .description")
+		description = strings.TrimSpace(strings.Replace(description, listing.Tags, "", -1))
 		listing.Description = description
 
 		e.ForEach(".party .slot", func(s int, p *colly.HTMLElement) {

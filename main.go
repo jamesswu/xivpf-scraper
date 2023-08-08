@@ -4,8 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"xiv-scraper/internals/ffxiv"
-	"xiv-scraper/internals/scraper"
+	db "xiv-scraper/internals/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -35,44 +34,9 @@ func main() {
 			panic(err)
 		}
 	}()
-
-	// s := gocron.NewScheduler(time.UTC)
-	// _, er := s.Every(3).Minutes().Do(func() {
-	scraper := scraper.New("https://xivpf.com/listings")
-	fmt.Println("starting scraper ...")
-	fmt.Println("scraping ...")
-	errr := scraper.Scrape()
-	if errr != nil {
-		fmt.Printf("scraper error: %f\n", err)
-	}
-	listings := scraper.Listings.GetUltimateListings(scraper.Listings)
 	coll := client.Database("xivpf").Collection("Listings")
-	// collection2 := client.Database("xivpf").Collection("Party")
-	// docs := []interface{}{}
-	for _, l := range listings.Listings {
-		listing := ffxiv.Listing{
-			DataCenter:  l.DataCenter,
-			Duty:        l.Duty,
-			Description: l.Description,
-			Creator:     l.Creator,
-			World:       l.World,
-			Expires:     l.Expires,
-			Updated:     l.Updated,
-			Party:       l.Party,
-		}
-		result, insertErr := coll.InsertOne(context.TODO(), listing)
-		if insertErr != nil {
-			fmt.Println("insert error")
-		} else {
-			fmt.Println(result)
-		}
-	}
-	// result, err := coll.InsertMany(context.TODO(), docs)
 
-	// clean database
-
-	// update database with new listings
-
+	go db.RunCronJob(coll)
 	// })
 	// if err != nil {
 	// 	fmt.Println(err)
@@ -83,9 +47,10 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("hello world")
 	})
-	// app.Get("/:duty", func(c *fiber.Ctx) error {
-	// 	listings := scraper.Listings.GetListings(scraper.Listings, c.Params("duty"))
-	// 	return c.JSON(listings)
-	// })
+	app.Get("/:duty", func(c *fiber.Ctx) error {
+		listings := db.GetListings(coll, c.Params("duty"))
+		return c.JSON(&listings)
+
+	})
 	app.Listen(":3000")
 }

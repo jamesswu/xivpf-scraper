@@ -7,6 +7,7 @@ type Listings struct {
 type Listing struct {
 	DataCenter  string
 	Duty        string `selector:".left .duty"`
+	Tags        string `selector:".left .description span"`
 	Description string
 	Creator     string `selector:".right .creator .text"`
 	World       string `selector:".right .world .text"`
@@ -40,18 +41,6 @@ func (ls *Listings) Add(l *Listing) {
 		}
 	}
 	ls.Listings = append(ls.Listings, l)
-}
-
-func (l *Listings) GetListings(ls *Listings, duty string) *Listings {
-	listings := &Listings{Listings: []*Listing{}}
-	for _, l := range ls.Listings {
-		if l.Duty == DutyHandler(duty) {
-			if l.DataCenter == "Aether" {
-				listings.Listings = append(listings.Listings, l)
-			}
-		}
-	}
-	return listings
 }
 
 func (l *Listings) GetUltimateListings(ls *Listings) *Listings {
