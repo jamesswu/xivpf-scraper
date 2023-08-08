@@ -7,7 +7,7 @@ https://github.com/epitaque/trappingway
 
 ### what it does
 
-scrapes the party finder listings from https://xivpf.com/listings
+runs a scheduled CronJob that scrapes the party finder listings from https://xivpf.com/listings then storing the data in a MongoDB Cluster for processing and retrieval.
 
 ### how to deploy
 
