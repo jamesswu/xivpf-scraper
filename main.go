@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 	"xiv-scraper/internals/router"
-	cronjob "xiv-scraper/internals/scheduler"
+	"xiv-scraper/internals/scheduler"
 	"xiv-scraper/internals/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,7 +27,7 @@ func main() {
 	defer utils.CloseDB()
 
 	// run cronjob
-	cronjob.RunCronJob()
+	go scheduler.RunCronJob()
 
 	// create app
 	app := fiber.New()
