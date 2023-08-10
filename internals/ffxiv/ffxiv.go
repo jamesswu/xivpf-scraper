@@ -5,15 +5,15 @@ type Listings struct {
 	Listings []*Listing
 }
 type Listing struct {
-	DataCenter  string
-	Duty        string `selector:".left .duty"`
-	Tags        string `selector:".left .description span"`
-	Description string
-	Creator     string `selector:".right .creator .text"`
-	World       string `selector:".right .world .text"`
-	Expires     string `selector:".right .expires .text"`
-	Updated     string `selector:".right .updated .text"`
-	Party       []*Slot
+	DataCenter  string  `json:"datacenter" bson:"datacenter"`
+	Duty        string  `selector:".left .duty" json:"duty" bson:"duty"`
+	Tags        string  `selector:".left .description span" json:"tags" bson:"tags"`
+	Description string  `json:"description" bson:"description"`
+	Creator     string  `selector:".right .creator .text" json:"creator" bson:"creator"`
+	World       string  `selector:".right .world .text" json:"world" bson:"world"`
+	Expires     string  `selector:".right .expires .text" json:"expires" bson:"expires"`
+	Updated     string  `selector:".right .updated .text" json:"updated" bson:"updated"`
+	Party       []*Slot `json:"party" bson:"party"`
 }
 
 // defining what makes a slot
