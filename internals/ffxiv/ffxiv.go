@@ -18,7 +18,7 @@ type Listing struct {
 
 // defining what makes a slot
 type Job int
-type role int
+type Role int
 
 type Slot struct {
 	Roles  Roles
@@ -26,12 +26,12 @@ type Slot struct {
 	Filled bool
 }
 type Roles struct {
-	Roles []role
+	Roles []Role
 }
 
 func NewSlot() *Slot {
 	return &Slot{
-		Roles: Roles{Roles: []role{}},
+		Roles: Roles{Roles: []Role{}},
 	}
 }
 func (ls *Listings) Add(l *Listing) {
@@ -128,7 +128,7 @@ func GetJob(abbr string) Job {
 }
 
 const (
-	Empty role = iota
+	Empty Role = iota
 	Tank
 	Healer
 	Dps
@@ -137,7 +137,6 @@ const (
 	Unknown Job = iota
 	GNB
 	PLD
-	GLD
 	DRK
 	WAR
 	SCH
